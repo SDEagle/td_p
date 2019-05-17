@@ -25,12 +25,12 @@ int main(int argc, char*argv[]){
 		vector<unsigned>first_out, head, first_ipp_of_arc, ipp_departure_time, ipp_travel_time;
 
 		if(argc <= 6){
-			cerr 
+			cerr
 				<< "Usage : \n"
 				<< argv[0] << " first_out head first_ipp_of_arc ipp_departure_time ipp_travel_time time_window_ch1 [time_window_ch2 [...]]" << endl;
 			return 1;
 		}else{
-			cerr << "Loading ... " << flush;	
+			cerr << "Loading ... " << flush;
 			first_out = load_vector<unsigned>(argv[1]);
 			head = load_vector<unsigned>(argv[2]);
 			first_ipp_of_arc = load_vector<unsigned>(argv[3]);
@@ -43,7 +43,7 @@ int main(int argc, char*argv[]){
 				ch[i-6] = ContractionHierarchy::load_file(argv[i]);
 			cerr << "done" << endl;
 		}
-		
+
 		check_if_td_graph_is_valid(period, first_out, head, first_ipp_of_arc, ipp_departure_time, ipp_travel_time);
 
 		const unsigned node_count = first_out.size()-1;
@@ -75,15 +75,14 @@ int main(int argc, char*argv[]){
 		auto get_pruned_td_weight = [&](unsigned arc, unsigned departure_time){
 			if(is_arc_allowed[arc])
 				return get_td_weight(arc, departure_time);
-			else 
+			else
 				return inf_weight;
 		};
 
 		cout << "Ready" << endl;
 
-		for(;;){
-			unsigned source_node, source_time, target_node;
-			cin >> source_node >> source_time >> target_node;
+		unsigned source_node, source_time, target_node;
+		while(cin >> source_node >> source_time >> target_node){
 
 			if(source_node > node_count){
 				cout << "source node invalid" << endl;
@@ -118,7 +117,7 @@ int main(int argc, char*argv[]){
 			vector<unsigned>td_s_path = dij.arc_path_to(target_node);
 			td_s_timer  += get_micro_time();
 
-			cout 
+			cout
 				<< "source node : " << source_node << '\n'
 				<< "source time [ms since midnight] : " << source_time << '\n'
 				<< "target node : " << target_node << '\n'
@@ -127,14 +126,14 @@ int main(int argc, char*argv[]){
 			if(exact_target_time == inf_weight){
 				cout << "No path" << endl;
 			} else {
-				cout 
+				cout
 					<< "Exact target time [ms since midnight] : " << exact_target_time << '\n'
 					<< "Exact travel time [ms since midnight] : " << (exact_target_time-source_time) << '\n'
 					<< "Exact arc path :";
 				for(auto a:exact_path)
 					cout << ' ' << a;
 				cout << endl;
-				cout 
+				cout
 					<< "TD-S target time [ms since midnight] : " << td_s_target_time << '\n'
 					<< "TD-S travel time [ms since midnight] : " << (td_s_target_time-source_time) << '\n'
 					<< "TD-S arc path :";
